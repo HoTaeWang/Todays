@@ -29,7 +29,12 @@
 
     
 
-* **Open-instruct**
+
+### CUE
+
+- **TensorZero**
+- **Tulu of the Allen institute** 
+- **Open-instruct**
   https://github.com/HoTaeWang/open-instruct
 
 
