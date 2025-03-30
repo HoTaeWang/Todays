@@ -33,9 +33,15 @@
 ### CUE
 
 - **TensorZero**
+
 - **Tulu of the Allen institute** 
+
 - **Open-instruct**
   https://github.com/HoTaeWang/open-instruct
+
+- Building Generative AI application with Gradio
+
+  https://www.deeplearning.ai/short-courses/building-generative-ai-applications-with-gradio/ 
 
 
 
