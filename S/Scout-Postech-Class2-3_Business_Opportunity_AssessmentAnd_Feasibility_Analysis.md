@@ -123,4 +123,4 @@
 
 
 
-![실습활동](.\Local_Food_Tour_Service.png)
+![실습활동](./Local_Food_Tour_Service.png)
