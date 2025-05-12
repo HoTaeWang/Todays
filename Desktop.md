@@ -4,7 +4,7 @@
 
 ### Main Activities
 
-* **Tokenizer**
+* #### **Tokenizer**
   
   1) Build a Large Language Model From Scratch
       https://wikidocs.net/253976
@@ -12,13 +12,17 @@
   2) 딥러닝을 이용한 자연어 처리 입문
       https://wikidocs.net/book/2155
 
-* Transformers
+  
+  
+* #### Transformers
 
-  [transformers/i18n/README_ko.md at main · huggingface/transformers](https://github.com/huggingface/transformers/blob/main/i18n/README_ko.md)
+  * Approaching to Transformers via the huggingface model
+
+    [transformers/i18n/README_ko.md at main · huggingface/transformers](https://github.com/huggingface/transformers/blob/main/i18n/README_ko.md)
 
   ​	
 
-* **Word2Vec**
+* #### **Word2Vec**
 
   1) Stanford  CS224n
       https://web.stanford.edu/class/cs224n/ 
@@ -28,27 +32,30 @@
 
 
 
-* Docker
+* #### Docker
+  
   * Practical Docker with Python
 
 
 
-* **Transformers in Hugging Face**
-    https://huggingface.co/docs/transformers/index
-
+* #### **Transformers in Hugging Face**
+    
+https://huggingface.co/docs/transformers/index
+    
     
 
 
 ### CUE
 
-- **TensorZero**
+- #### **TensorZero**
 
-- **Tulu of the Allen institute** 
+- #### **Tulu of the Allen institute** 
 
-- **Open-instruct**
-  https://github.com/HoTaeWang/open-instruct
-
-- Building Generative AI application with Gradio
+- #### **Open-instruct**
+  
+https://github.com/HoTaeWang/open-instruct
+  
+- #### Building Generative AI application with Gradio
 
   https://www.deeplearning.ai/short-courses/building-generative-ai-applications-with-gradio/ 
 
