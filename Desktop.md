@@ -16,7 +16,7 @@
 
   [transformers/i18n/README_ko.md at main · huggingface/transformers](https://github.com/huggingface/transformers/blob/main/i18n/README_ko.md)
 
-  	
+  ​	
 
 * **Word2Vec**
 
@@ -26,7 +26,12 @@
   2) 사전 학습
       https://cs231n.github.io/python-numpy-tutorial/        
 
-  
+
+
+* Docker
+  * Practical Docker with Python
+
+
 
 * **Transformers in Hugging Face**
     https://huggingface.co/docs/transformers/index
@@ -51,9 +56,9 @@
 
 ### Reading Books
 
-*  Atomic Habit
+* How Big Things Get Done
 
-  ![Atomic Habit](./img/atomic_habits.jpg)
+  ![How Big things get done](./img/HowBigThingsGetDone.jpg)
 
-* Nexus
+  
 
