@@ -32,17 +32,19 @@
 
 
 
-* #### Docker
-  
-  * Practical Docker with Python
+* Deep Learning with Pytorch
 
+  ![Deep Learning With Pytorch](./img/DeepLearningWithPytorch.png)
 
+* Natural Language Processing with Pytorch
+
+  ![](./img/NaturalProcessingWithPytorch.png)
 
 * #### **Transformers in Hugging Face**
-    
-https://huggingface.co/docs/transformers/index
-    
-    
+
+  https://huggingface.co/docs/transformers/index
+  
+      
 
 
 ### CUE
@@ -53,8 +55,9 @@ https://huggingface.co/docs/transformers/index
 
 - #### **Open-instruct**
   
+
 https://github.com/HoTaeWang/open-instruct
-  
+
 - #### Building Generative AI application with Gradio
 
   https://www.deeplearning.ai/short-courses/building-generative-ai-applications-with-gradio/ 
