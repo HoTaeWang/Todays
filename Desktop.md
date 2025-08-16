@@ -36,9 +36,9 @@
 
   ![Deep Learning With Pytorch](./img/DeepLearningWithPytorch.png)
 
-* Natural Language Processing with Pytorch
+* Build a Large Language Model from Scratch (Sebastian Raschka, **Very Useful**)
 
-  ![](./img/NaturalProcessingWithPytorch.png)
+  ![Build a Large Language Model](./img/Build_LLM_From_Scratch.jpg)
 
 * #### **Transformers in Hugging Face**
 
@@ -69,9 +69,9 @@
 
 ### Reading Books
 
-* How Big Things Get Done
+* Appropriate Life
 
-  ![How Big things get done](./img/HowBigThingsGetDone.jpg)
+  ![Appropriate Life](./img/AppropriateLife.jpg)
 
   
 
