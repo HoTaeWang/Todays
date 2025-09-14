@@ -4,25 +4,26 @@
 
 ### Main Activities
 
-* #### **Tokenizer**
-  
+#### **Tokenizer**
+
   1) Build a Large Language Model From Scratch
       https://wikidocs.net/253976
-  
+
   2) 딥러닝을 이용한 자연어 처리 입문
       https://wikidocs.net/book/2155
 
-  
-  
-* #### Transformers
+  3) Practical Deep Learning for Coders
+      https://course.fast.ai/Resources/book.html
+
+
+#### Transformers
 
   * Approaching to Transformers via the huggingface model
 
-    [transformers/i18n/README_ko.md at main · huggingface/transformers](https://github.com/huggingface/transformers/blob/main/i18n/README_ko.md)
+    [transformers/i18n/README_ko.md at main huggingface/transformers](https://github.com/huggingface/transformers/blob/main/i18n/README_ko.md)
 
-  ​	
 
-* #### **Word2Vec**
+#### **Word2Vec**
 
   1) Stanford  CS224n
       https://web.stanford.edu/class/cs224n/ 
@@ -31,47 +32,55 @@
       https://cs231n.github.io/python-numpy-tutorial/        
 
 
-
-* Deep Learning with Pytorch
+#### Deep Learning with Pytorch
 
   ![Deep Learning With Pytorch](./img/DeepLearningWithPytorch.png)
 
-* Build a Large Language Model from Scratch (Sebastian Raschka, **Very Useful**)
+#### Build a Large Language Model from Scratch (Sebastian Raschka, **Very Useful**)
 
   ![Build a Large Language Model](./img/Build_LLM_From_Scratch.jpg)
 
-* #### **Transformers in Hugging Face**
+#### Deep Learning for Coders with fastai & PyTorch
+
+  ![AI Applications Without a PhD](./img/DeepLearningForCodersWithFastai&PyTorch.png)
+
+#### **Transformers in Hugging Face**
 
   https://huggingface.co/docs/transformers/index
-  
-  ​    
+
+
+### S 
+
+* **Frigate** 
+
+  https://github.com/blakeblackshear/frigate
 
 
 ### CUE
 
-- Python DataAccessing
+- **Python Data Accessing**
 
   https://wesmckinney.com/book/accessing-data 
 
-- #### **TensorZero**
+- **Jupyter nbviewer**
 
-- #### **Tulu of the Allen institute** 
+  https://nbviewer.org/ 
 
-- #### **Open-instruct**
+- **TensorZero**
+
+- **Tulu of the Allen institute** 
+
+- **Open-instruct**
   
   https://github.com/HoTaeWang/open-instruct
-  
-- #### Building Generative AI application with Gradio
-
-  https://www.deeplearning.ai/short-courses/building-generative-ai-applications-with-gradio/ 
 
 
 
 ### Reading Books
 
-* Appropriate Life
+**총균쇠**
 
-  ![Appropriate Life](./img/AppropriateLife.jpg)
+  ![Guns, Germs, and Steels](./img/Guns_Germs_and_Steels.jpg)
 
   
 
