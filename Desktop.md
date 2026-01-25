@@ -15,6 +15,11 @@
   3) Practical Deep Learning for Coders
       https://course.fast.ai/Resources/book.html
 
+#### **AI Engineering**
+
+* Chip Huan AI Engineering
+
+  https://github.com/chiphuyen/aie-book
 
 #### Transformers
 
@@ -78,9 +83,9 @@
 
 ### Reading Books
 
-**총균쇠**
+**AI Engineering**
 
-  ![Guns, Germs, and Steels](./img/Guns_Germs_and_Steels.jpg)
+  ![AI Engineering](./img/ai_engineering.jpg)
 
   
 
