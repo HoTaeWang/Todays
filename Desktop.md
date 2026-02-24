@@ -71,6 +71,9 @@
 
   https://nbviewer.org/ 
 
+- **MDPI**(Multidisciplinary Digital Publishing Institute) 
+  https://www.mdpi.com 
+
 - **TensorZero**
 
 - **Tulu of the Allen institute** 
