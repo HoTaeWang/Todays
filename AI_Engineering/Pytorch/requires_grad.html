@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyTorch Autograd 튜토리얼</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #f97316;
+    --accent2: #fb923c;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --purple: #bc8cff;
+    --yellow: #e3b341;
+    --red: #ff7b72;
+    --pink: #f778ba;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1f2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(88,166,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(249,115,22,0.15);
+    border: 1px solid rgba(249,115,22,0.3);
+    color: var(--accent2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 .highlight {
+    background: linear-gradient(90deg, var(--accent), var(--yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 16px;
+    max-width: 600px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Main layout */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 50px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* Step cards */
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .step:nth-child(1) { animation-delay: 0.1s; }
+  .step:nth-child(2) { animation-delay: 0.2s; }
+  .step:nth-child(3) { animation-delay: 0.3s; }
+  .step:nth-child(4) { animation-delay: 0.4s; }
+  .step:nth-child(5) { animation-delay: 0.5s; }
+  .step:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-header {
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .step-num.orange { background: rgba(249,115,22,0.2); color: var(--accent); border: 2px solid rgba(249,115,22,0.4); }
+  .step-num.blue { background: rgba(88,166,255,0.15); color: var(--blue); border: 2px solid rgba(88,166,255,0.3); }
+  .step-num.green { background: rgba(63,185,80,0.15); color: var(--green); border: 2px solid rgba(63,185,80,0.3); }
+  .step-num.purple { background: rgba(188,140,255,0.15); color: var(--purple); border: 2px solid rgba(188,140,255,0.3); }
+  .step-num.yellow { background: rgba(227,179,65,0.15); color: var(--yellow); border: 2px solid rgba(227,179,65,0.3); }
+
+  .step-title { font-size: 17px; font-weight: 700; }
+  .step-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+  .step-body { padding: 24px 28px; }
+
+  /* Math box */
+  .math-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--yellow);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+  }
+
+  .math-box .formula {
+    font-size: 18px;
+    color: var(--yellow);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .math-box .step-calc {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 2;
+  }
+
+  .math-box .result {
+    color: var(--green);
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Code block */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-header {
+    background: var(--surface2);
+    padding: 10px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #ffbd2e; }
+  .dot-green { background: #28c940; }
+
+  .code-body {
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+
+  .code-body .line {
+    display: flex;
+    gap: 16px;
+  }
+
+  .line-num {
+    color: #3d4451;
+    user-select: none;
+    min-width: 20px;
+    text-align: right;
+    font-size: 12px;
+  }
+
+  .line-content { flex: 1; }
+
+  /* Syntax colors */
+  .kw { color: #ff7b72; }       /* keyword: import, as, requires_grad */
+  .fn { color: #d2a8ff; }       /* function: tensor, backward, print */
+  .str { color: #a5d6ff; }      /* string */
+  .num { color: #f2cc60; }      /* numbers */
+  .cmt { color: #6e7681; font-style: italic; } /* comment */
+  .cls { color: #ffa657; }      /* class/type: torch */
+  .var { color: #79c0ff; }      /* variable */
+  .op { color: #ff7b72; }       /* operator */
+  .attr { color: #e3b341; }     /* attribute: .grad */
+
+  /* Explanation card */
+  .explain {
+    background: rgba(88,166,255,0.05);
+    border: 1px solid rgba(88,166,255,0.2);
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: 14px;
+    color: #b1bac4;
+    line-height: 1.8;
+    margin: 12px 0;
+  }
+
+  .explain strong { color: var(--blue); }
+  .explain code {
+    background: var(--surface2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+  }
+
+  /* Output box */
+  .output-box {
+    background: #0d1117;
+    border: 1px solid rgba(63,185,80,0.3);
+    border-left: 4px solid var(--green);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    margin: 16px 0;
+  }
+
+  .output-label {
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .output-label::before {
+    content: '▶';
+    font-size: 10px;
+  }
+
+  .output-line { color: var(--text-muted); font-size: 13px; line-height: 2; }
+  .output-val { color: var(--green); font-weight: 600; }
+
+  /* Callout boxes */
+  .callout {
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 14px;
+    margin: 12px 0;
+    display: flex;
+    gap: 12px;
+    line-height: 1.7;
+  }
+
+  .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+  .callout.warning {
+    background: rgba(227,179,65,0.08);
+    border: 1px solid rgba(227,179,65,0.25);
+    color: #c9a227;
+  }
+
+  .callout.tip {
+    background: rgba(63,185,80,0.07);
+    border: 1px solid rgba(63,185,80,0.25);
+    color: #5baa6e;
+  }
+
+  .callout.info {
+    background: rgba(88,166,255,0.07);
+    border: 1px solid rgba(88,166,255,0.2);
+    color: #6da8e0;
+  }
+
+  .callout.danger {
+    background: rgba(255,123,114,0.07);
+    border: 1px solid rgba(255,123,114,0.25);
+    color: #e07070;
+  }
+
+  /* Graph viz */
+  .graph-viz {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+    text-align: center;
+  }
+
+  .graph-nodes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .node {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .node.input { background: rgba(249,115,22,0.2); border: 1.5px solid rgba(249,115,22,0.5); color: var(--accent2); }
+  .node.op-node { background: rgba(88,166,255,0.15); border: 1.5px solid rgba(88,166,255,0.4); color: var(--blue); }
+  .node.output { background: rgba(63,185,80,0.15); border: 1.5px solid rgba(63,185,80,0.4); color: var(--green); }
+  .node.grad-node { background: rgba(188,140,255,0.15); border: 1.5px dashed rgba(188,140,255,0.5); color: var(--purple); }
+
+  .arrow {
+    color: var(--text-muted);
+    font-size: 20px;
+    margin: 0 4px;
+  }
+
+  .back-arrow {
+    color: var(--purple);
+    font-size: 12px;
+    margin: 8px 0;
+    letter-spacing: 2px;
+  }
+
+  .graph-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  /* Full code section */
+  .full-code-section {
+    background: var(--surface);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .full-code-header {
+    background: rgba(249,115,22,0.1);
+    border-bottom: 1px solid rgba(249,115,22,0.2);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .full-code-title {
+    font-weight: 700;
+    color: var(--accent2);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Summary table */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .summary-table th {
+    background: var(--surface2);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table .td-key { color: var(--accent2); }
+  .summary-table .td-desc { color: var(--text-muted); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; }
+  .summary-table .td-val { color: var(--green); }
+
+  /* Quiz section */
+  .quiz-section {
+    background: linear-gradient(135deg, rgba(188,140,255,0.08), rgba(88,166,255,0.05));
+    border: 1px solid rgba(188,140,255,0.25);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .quiz-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--purple);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .quiz-q {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-btn {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+
+  .quiz-btn:hover { border-color: var(--purple); background: rgba(188,140,255,0.08); }
+  .quiz-btn.correct { border-color: var(--green); background: rgba(63,185,80,0.1); color: var(--green); }
+  .quiz-btn.wrong { border-color: var(--red); background: rgba(255,123,114,0.08); color: var(--red); }
+
+  #quiz-result {
+    display: none;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  #quiz-result.show { display: block; }
+  #quiz-result.correct-res { background: rgba(63,185,80,0.1); border: 1px solid var(--green); color: var(--green); }
+  #quiz-result.wrong-res { background: rgba(255,123,114,0.08); border: 1px solid var(--red); color: var(--red); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 30px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  p { margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">📚 개인 선생님 강의</div>
+  <h1>PyTorch <span class="highlight">Autograd</span>로<br>미분 계산하기</h1>
+  <p>y = x² + 2x + 1 에서 x = 3일 때 기울기를 자동으로 구해봐요!</p>
+</div>
+
+<div class="container">
+
+  <!-- STEP 0: 수학 복습 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num yellow">📐</div>
+      <div>
+        <div class="step-title">먼저 수학으로 확인해봐요</div>
+        <div class="step-subtitle">손으로 계산한 결과와 Autograd 결과를 비교할 거예요</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="math-box">
+        <div class="formula">y = x² + 2x + 1</div>
+        <div class="step-calc">
+          미분 → dy/dx = 2x + 2<br>
+          x = 3 대입 → dy/dx = 2(3) + 2 = 6 + 2
+        </div>
+        <div class="result">✅ 정답: dy/dx = 8</div>
+      </div>
+      <div class="callout info">
+        <span class="callout-icon">💡</span>
+        <div>PyTorch Autograd가 이 계산을 <strong>자동으로</strong> 해주는 거예요. 복잡한 수식도 직접 미분 안 해도 됩니다!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1: import -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num orange">1</div>
+      <div>
+        <div class="step-title">PyTorch 불러오기</div>
+        <div class="step-subtitle">가장 먼저 torch 라이브러리를 import해요</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dot dot-red"></div>
+          <div class="code-dot dot-yellow"></div>
+          <div class="code-dot dot-green"></div>
+          <span style="margin-left:8px">step1_import.py</span>
+        </div>
+        <div class="code-body">
+          <div class="line">
+            <span class="line-num">1</span>
+            <span class="line-content"><span class="kw">import</span> <span class="cls">torch</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="explain">
+        <strong>torch</strong>는 PyTorch의 핵심 라이브러리예요. 텐서 연산, 자동 미분 등 모든 기능이 여기에 담겨 있어요.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: 텐서 생성 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num orange">2</div>
+      <div>
+        <div class="step-title">x 텐서 만들기 (requires_grad=True)</div>
+        <div class="step-subtitle">핵심! 이 옵션이 있어야 gradient를 추적해요</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dot dot-red"></div>
+          <div class="code-dot dot-yellow"></div>
+          <div class="code-dot dot-green"></div>
+          <span style="margin-left:8px">step2_tensor.py</span>
+        </div>
+        <div class="code-body">
+          <div class="line">
+            <span class="line-num">1</span>
+            <span class="line-content"><span class="var">x</span> <span class="op">=</span> <span class="cls">torch</span>.<span class="fn">tensor</span>(<span class="num">3.0</span>, <span class="attr">requires_grad</span><span class="op">=</span><span class="kw">True</span>)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="explain">
+        <code>requires_grad=True</code>는 이 텐서에 대한 <strong>기울기를 계산하겠다</strong>는 선언이에요.<br>
+        이걸 설정해야 PyTorch가 계산 과정을 기록(추적)해줘요.<br><br>
+        ⚠️ 숫자를 <code>3.0</code>처럼 <strong>float</strong>으로 넣어야 해요! <code>3</code>(int)로 하면 오류납니다.
+      </div>
+
+      <div class="callout warning">
+        <span class="callout-icon">⚠️</span>
+        <div><code>requires_grad=True</code>를 빠뜨리면 나중에 <code>.backward()</code>를 호출해도 gradient가 계산되지 않아요!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: 수식 정의 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num blue">3</div>
+      <div>
+        <div class="step-title">y = x² + 2x + 1 수식 작성</div>
+        <div class="step-subtitle">PyTorch가 이 과정을 "계산 그래프"로 기록해요</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dot dot-red"></div>
+          <div class="code-dot dot-yellow"></div>
+          <div class="code-dot dot-green"></div>
+          <span style="margin-left:8px">step3_formula.py</span>
+        </div>
+        <div class="code-body">
+          <div class="line">
+            <span class="line-num">1</span>
+            <span class="line-content"><span class="var">y</span> <span class="op">=</span> <span class="var">x</span><span class="op">**</span><span class="num">2</span> <span class="op">+</span> <span class="num">2</span><span class="op">*</span><span class="var">x</span> <span class="op">+</span> <span class="num">1</span></span>
+          </div>
+          <div class="line" style="margin-top:8px">
+            <span class="line-num">2</span>
+            <span class="line-content"><span class="fn">print</span>(<span class="str">"y 값:"</span>, <span class="var">y</span>)  <span class="cmt"># tensor(16., grad_fn=&lt;AddBackward0&gt;)</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="explain">
+        x = 3.0 이므로 y = 9 + 6 + 1 = <strong>16</strong>이 됩니다.<br>
+        출력에 <code>grad_fn=&lt;AddBackward0&gt;</code>이 붙어있는 걸 볼 수 있어요. 이게 바로 <strong>계산 그래프</strong>가 기록되고 있다는 증거예요!
+      </div>
+
+      <!-- 계산 그래프 시각화 -->
+      <div class="graph-viz">
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px; letter-spacing:1px; text-transform:uppercase;">📊 Forward Pass (순전파)</p>
+        <div class="graph-nodes">
+          <div class="node input">x = 3.0</div>
+          <span class="arrow">→</span>
+          <div class="node op-node">x²</div>
+          <span class="arrow">+</span>
+          <div class="node op-node">2x</div>
+          <span class="arrow">+</span>
+          <div class="node op-node">1</div>
+          <span class="arrow">→</span>
+          <div class="node output">y = 16.0</div>
+        </div>
+        <div class="back-arrow">⬅️ ⬅️ ⬅️ &nbsp; Backward Pass (역전파) &nbsp; ⬅️ ⬅️ ⬅️</div>
+        <div class="node grad-node" style="display:inline-block; margin-top:4px">dy/dx = 8.0 🎯</div>
+        <div class="graph-label">PyTorch는 순전파 과정을 기록했다가, backward() 호출 시 역방향으로 미분값을 계산합니다</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: backward -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num green">4</div>
+      <div>
+        <div class="step-title">y.backward() 호출 — 역전파!</div>
+        <div class="step-subtitle">이 한 줄이 모든 gradient를 자동으로 계산해줘요</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dot dot-red"></div>
+          <div class="code-dot dot-yellow"></div>
+          <div class="code-dot dot-green"></div>
+          <span style="margin-left:8px">step4_backward.py</span>
+        </div>
+        <div class="code-body">
+          <div class="line">
+            <span class="line-num">1</span>
+            <span class="line-content"><span class="var">y</span>.<span class="fn">backward</span>()</span>
+          </div>
+        </div>
+      </div>
+      <div class="explain">
+        <code>backward()</code>를 호출하면 PyTorch가 <strong>체인 룰(Chain Rule)</strong>을 이용해서<br>
+        기록된 계산 그래프를 거꾸로 따라가며 모든 gradient를 계산해요.<br><br>
+        이 과정을 <strong>역전파(Backpropagation)</strong>라고 합니다. 딥러닝 학습의 핵심 원리예요!
+      </div>
+      <div class="callout tip">
+        <span class="callout-icon">🚀</span>
+        <div>신경망에서는 수백만 개의 파라미터가 있는데, <code>backward()</code> 한 번으로 모든 파라미터의 기울기를 동시에 계산해줘요. 이게 PyTorch가 강력한 이유입니다!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: gradient 확인 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num purple">5</div>
+      <div>
+        <div class="step-title">x.grad로 결과 확인</div>
+        <div class="step-subtitle">계산된 gradient가 여기에 저장돼요</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dot dot-red"></div>
+          <div class="code-dot dot-yellow"></div>
+          <div class="code-dot dot-green"></div>
+          <span style="margin-left:8px">step5_result.py</span>
+        </div>
+        <div class="code-body">
+          <div class="line">
+            <span class="line-num">1</span>
+            <span class="line-content"><span class="fn">print</span>(<span class="str">"dy/dx ="</span>, <span class="var">x</span>.<span class="attr">grad</span>)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="output-box">
+        <div class="output-label">Output</div>
+        <div class="output-line">dy/dx = <span class="output-val">tensor(8.)</span></div>
+      </div>
+
+      <div class="explain">
+        <code>x.grad</code>에 기울기 값이 저장됩니다.<br>
+        우리가 손으로 계산한 <strong>8</strong>과 완벽하게 일치합니다! 🎉<br><br>
+        <code>.item()</code>을 사용하면 Python 숫자로 변환할 수 있어요: <code>x.grad.item()</code> → <code>8.0</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- 전체 코드 -->
+  <div class="full-code-section">
+    <div class="full-code-header">
+      <div class="full-code-title">
+        🔥 전체 코드 한눈에 보기
+      </div>
+    </div>
+    <div class="code-body" style="padding: 24px;">
+      <div class="line">
+        <span class="line-num">1</span>
+        <span class="line-content"><span class="kw">import</span> <span class="cls">torch</span></span>
+      </div>
+      <div class="line" style="margin-top: 10px">
+        <span class="line-num">2</span>
+        <span class="line-content"></span>
+      </div>
+      <div class="line">
+        <span class="line-num">3</span>
+        <span class="line-content"><span class="cmt"># 1. x 텐서 생성 (requires_grad=True 필수!)</span></span>
+      </div>
+      <div class="line">
+        <span class="line-num">4</span>
+        <span class="line-content"><span class="var">x</span> <span class="op">=</span> <span class="cls">torch</span>.<span class="fn">tensor</span>(<span class="num">3.0</span>, <span class="attr">requires_grad</span><span class="op">=</span><span class="kw">True</span>)</span>
+      </div>
+      <div class="line" style="margin-top: 10px">
+        <span class="line-num">5</span>
+        <span class="line-content"></span>
+      </div>
+      <div class="line">
+        <span class="line-num">6</span>
+        <span class="line-content"><span class="cmt"># 2. 수식 정의 (계산 그래프 자동 기록)</span></span>
+      </div>
+      <div class="line">
+        <span class="line-num">7</span>
+        <span class="line-content"><span class="var">y</span> <span class="op">=</span> <span class="var">x</span><span class="op">**</span><span class="num">2</span> <span class="op">+</span> <span class="num">2</span><span class="op">*</span><span class="var">x</span> <span class="op">+</span> <span class="num">1</span></span>
+      </div>
+      <div class="line" style="margin-top: 10px">
+        <span class="line-num">8</span>
+        <span class="line-content"></span>
+      </div>
+      <div class="line">
+        <span class="line-num">9</span>
+        <span class="line-content"><span class="cmt"># 3. 역전파 (gradient 자동 계산)</span></span>
+      </div>
+      <div class="line">
+        <span class="line-num">10</span>
+        <span class="line-content"><span class="var">y</span>.<span class="fn">backward</span>()</span>
+      </div>
+      <div class="line" style="margin-top: 10px">
+        <span class="line-num">11</span>
+        <span class="line-content"></span>
+      </div>
+      <div class="line">
+        <span class="line-num">12</span>
+        <span class="line-content"><span class="cmt"># 4. 결과 확인</span></span>
+      </div>
+      <div class="line">
+        <span class="line-num">13</span>
+        <span class="line-content"><span class="fn">print</span>(<span class="str">f"y 값: {<span class="var">y</span>.<span class="fn">item</span>()}"</span>)     <span class="cmt"># 16.0</span></span>
+      </div>
+      <div class="line">
+        <span class="line-num">14</span>
+        <span class="line-content"><span class="fn">print</span>(<span class="str">f"dy/dx = {<span class="var">x</span>.<span class="attr">grad</span>.<span class="fn">item</span>()}"</span>) <span class="cmt"># 8.0 ✅</span></span>
+      </div>
+    </div>
+    <div class="output-box" style="margin: 0 24px 24px; border-left-color: var(--green);">
+      <div class="output-label">실행 결과</div>
+      <div class="output-line">y 값: <span class="output-val">16.0</span></div>
+      <div class="output-line">dy/dx = <span class="output-val">8.0</span> &nbsp;✅ 손으로 계산한 값과 동일!</div>
+    </div>
+  </div>
+
+  <!-- 핵심 개념 요약 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num yellow">📋</div>
+      <div>
+        <div class="step-title">핵심 개념 요약표</div>
+        <div class="step-subtitle">외워두면 유용한 Autograd 키워드들</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <table class="summary-table">
+        <tr>
+          <th>개념 / 코드</th>
+          <th>역할</th>
+          <th>값 (x=3.0)</th>
+        </tr>
+        <tr>
+          <td class="td-key">requires_grad=True</td>
+          <td class="td-desc">이 텐서의 gradient를 추적하겠다고 선언</td>
+          <td class="td-val">—</td>
+        </tr>
+        <tr>
+          <td class="td-key">y = x**2 + 2*x + 1</td>
+          <td class="td-desc">순전파(Forward Pass) — 계산 그래프 기록</td>
+          <td class="td-val">16.0</td>
+        </tr>
+        <tr>
+          <td class="td-key">y.backward()</td>
+          <td class="td-desc">역전파(Backward Pass) — gradient 자동 계산</td>
+          <td class="td-val">—</td>
+        </tr>
+        <tr>
+          <td class="td-key">x.grad</td>
+          <td class="td-desc">x에 대한 dy/dx 값이 저장되는 곳</td>
+          <td class="td-val">tensor(8.)</td>
+        </tr>
+        <tr>
+          <td class="td-key">x.grad.item()</td>
+          <td class="td-desc">tensor → 일반 Python 숫자로 변환</td>
+          <td class="td-val">8.0</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="quiz-section">
+    <div class="quiz-title">🧠 이해도 확인 퀴즈</div>
+    <div class="quiz-q">y = x² + 2x + 1 에서 x = 5.0 일 때, dy/dx 는?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="checkAnswer(this, false)">① 25.0</button>
+      <button class="quiz-btn" onclick="checkAnswer(this, true)">② 12.0</button>
+      <button class="quiz-btn" onclick="checkAnswer(this, false)">③ 10.0</button>
+      <button class="quiz-btn" onclick="checkAnswer(this, false)">④ 16.0</button>
+    </div>
+    <div id="quiz-result"></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  📖 PyTorch Autograd Tutorial &nbsp;|&nbsp; 개인 선생님 강의 자료
+</div>
+
+<script>
+function checkAnswer(btn, isCorrect) {
+  const allBtns = document.querySelectorAll('.quiz-btn');
+  allBtns.forEach(b => {
+    b.style.pointerEvents = 'none';
+    b.classList.remove('correct', 'wrong');
+  });
+
+  const result = document.getElementById('quiz-result');
+  result.classList.add('show');
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    result.className = 'show correct-res';
+    result.innerHTML = '🎉 정답! dy/dx = 2x + 2 에 x=5를 대입 → 2(5)+2 = <strong>12</strong>';
+  } else {
+    btn.classList.add('wrong');
+    // Highlight correct answer
+    allBtns[1].classList.add('correct');
+    result.className = 'show wrong-res';
+    result.innerHTML = '❌ 틀렸어요. dy/dx = 2x + 2 에 x=5를 대입하면 → 2(5)+2 = <strong>12</strong>이에요.';
+  }
+}
+</script>
+
+</body>
+</html>
