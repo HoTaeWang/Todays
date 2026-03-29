@@ -15,17 +15,31 @@
   3) Practical Deep Learning for Coders
       https://course.fast.ai/Resources/book.html
 
+
+
 #### **AI Engineering**
 
 * Chip Huan AI Engineering
 
   https://github.com/chiphuyen/aie-book
+  
+* Awesome public Dataset
+
+  https://github.com/awesomedata/awesome-public-datasets
+
+* Wine Dataset
+
+  http://mng.bz/90Ol
+
+
 
 #### Transformers
 
   * Approaching to Transformers via the huggingface model
 
     [transformers/i18n/README_ko.md at main huggingface/transformers](https://github.com/huggingface/transformers/blob/main/i18n/README_ko.md)
+    
+    
 
 
 #### **Word2Vec**
@@ -37,13 +51,25 @@
       https://cs231n.github.io/python-numpy-tutorial/        
 
 
+
 #### Deep Learning with Pytorch
 
   ![Deep Learning With Pytorch](./img/DeepLearningWithPytorch.png)
 
+
+
 #### Build a Large Language Model from Scratch (Sebastian Raschka, **Very Useful**)
 
   ![Build a Large Language Model](./img/Build_LLM_From_Scratch.jpg)
+
+
+
+#### Generative AI with python and pytorch
+
+https://github.com/PacktPublishing/Generative-AI-with-Python-and-PyTorch-Second-Edition 
+
+![Generative AI with Python and Pytorch](./img/GenerativeAIwith.jpg)
+
 
 #### Deep Learning for Coders with fastai & PyTorch
 
