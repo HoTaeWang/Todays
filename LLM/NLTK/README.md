@@ -1,6 +1,16 @@
 # NLTK
 
+* NLTK는 Python 기반의 대표적인 자연어 처리(NLP) 오픈소스 Toolkit
+* 토큰화, 형태 처리, 품사 Tagging, Chunking, Parsing, 의미 해석등 전통적 NLP 전과정을 위한 모듈과 함께 50여종 이상의 Corpus/WordNet등 표준화된 인터페이스 제공
+* 교육, 연구, 프로토타이핑에 특히 적합한 "종합 실습용 Toolbox"
 
+
+
+
+
+## Key Modules
+
+1) WordNet  ([Wordnet Sample Usage](./wordnet-Sample_Usage.md))
 
 
 
@@ -16,7 +26,7 @@
 
 
 
-### ✅ 심볼릭 링크 생성 방법
+### ✅ 심볼릭 링크 생성 방법  (Configuration)
 
 ```
 sudo ln -s /data/nltk_data /usr/share/nltk_data

@@ -97,6 +97,9 @@ https://github.com/PacktPublishing/Generative-AI-with-Python-and-PyTorch-Second-
 
   https://nbviewer.org/ 
 
+- **MDPI**(Multidisciplinary Digital Publishing Institute) 
+  https://www.mdpi.com 
+
 - **TensorZero**
 
 - **Tulu of the Allen institute** 
