@@ -16,5 +16,10 @@
 
   ![Intoro to Machine Learning](./Kaggle-IntroToMachineLearning.png)
 
+* Pandas
+
+  * August 1st, 2026
+
+  ![Pandas](./Kaggle-Pandas.png)
   
 
