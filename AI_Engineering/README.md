@@ -17,3 +17,27 @@
 
 
 
+### Building blocks of a good prompt
+
+#### Goal
+
+- What you want to create
+
+#### Input
+
+- What the users provide
+
+#### Layout
+
+- How the app should look
+
+#### Features
+
+- What special features to include
+
+#### Output
+
+- What the app should output
+
+
+
