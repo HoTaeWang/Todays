@@ -48,8 +48,8 @@ from gensim.models import Word2Vec
 
 # 파라미터 설정
 embedding_size = 100  # 단어 벡터의 차원 수
-window_size = 5  # 컨텍스트 윈도우 크기
-min_word_count = 1  # 최소 단어 빈도 수
+window_size = 5       # 컨텍스트 윈도우 크기
+min_word_count = 1    # 최소 단어 빈도 수
 
 # Word2Vec 모델 초기화 및 학습
 model = Word2Vec(sentences, vector_size=embedding_size, window=window_size, min_count=min_word_count, workers=4)

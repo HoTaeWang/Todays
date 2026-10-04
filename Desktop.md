@@ -4,21 +4,16 @@
 
 ### Main Activities
 
-#### **Tokenizer**
-
-  1) Build a Large Language Model From Scratch
-      https://wikidocs.net/253976
-
-  2) 딥러닝을 이용한 자연어 처리 입문
-      https://wikidocs.net/book/2155
-
-  3) Practical Deep Learning for Coders
-      https://course.fast.ai/Resources/book.html
-
 
 
 #### **AI Engineering**
 
+* LLM
+
+  * [[Tokenizer]]
+  * Word2Vec
+  * 
+  
 * Chip Huan AI Engineering
 
   https://github.com/chiphuyen/aie-book
@@ -30,6 +25,19 @@
 * Wine Dataset
 
   http://mng.bz/90Ol
+
+
+
+#### **Tokenizer**
+
+  1) Build a Large Language Model From Scratch
+      https://wikidocs.net/253976
+
+  2) 딥러닝을 이용한 자연어 처리 입문
+      https://wikidocs.net/book/2155
+
+  3) Practical Deep Learning for Coders
+      https://course.fast.ai/Resources/book.html
 
 
 
